@@ -66,7 +66,7 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 100, child: Image.asset('image/logo.png')),
+                SizedBox(height: 200, child: Image.asset('assets/logo.png')),
                 SizedBox(height: 25),
 
                 // MyTextField(
@@ -98,7 +98,11 @@ class _LoginViewState extends State<LoginView> {
                   onTap: widget.onTap,
                   child: Text(
                     'Quero me cadastrar',
-                    style: PlantTextStyle.bodySM(color: Colors.white),
+                    style: PlantTextStyle.bodyMD(
+                      color: Colors.white,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.white,
+                    ),
                   ),
                 ),
               ],

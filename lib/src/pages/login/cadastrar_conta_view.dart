@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:plant_health/src/shared/constantes.dart';
 
 class CadastrarContaView extends StatefulWidget {
   final Function()? onTap;
@@ -69,7 +70,8 @@ class CadastrarContaViewState extends State<CadastrarContaView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 243, 243, 243),
+      appBar: AppBar(backgroundColor: primaryColor),
+      backgroundColor: primaryColor,
       resizeToAvoidBottomInset: true,
       body: Form(
         key: _formKey,
@@ -81,7 +83,7 @@ class CadastrarContaViewState extends State<CadastrarContaView> {
                 SizedBox(height: 50),
                 SizedBox(
                   height: 100,
-                  child: ClipOval(child: Image.asset('assets/logos/logo.png')),
+                  child: ClipOval(child: Image.asset('assets/logo.png')),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -131,35 +133,6 @@ class CadastrarContaViewState extends State<CadastrarContaView> {
                 //   formKey: _formKey,
                 //   text: 'Registrar',
                 // ),
-                SizedBox(height: 20),
-
-                // continue with
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 8, right: 8),
-                        child: Text(
-                          'OU',
-                          style: TextStyle(color: Colors.grey.shade600),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

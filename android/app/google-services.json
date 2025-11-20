@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "266991416176",
+    "project_id": "plant-health-7a33b",
+    "storage_bucket": "plant-health-7a33b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266991416176:android:1bcc17e61685dc098355b5",
+        "android_client_info": {
+          "package_name": "com.example.plant_health"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdbqebAUhxwBEUQx2_iBg7bW9nSPjQEEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
