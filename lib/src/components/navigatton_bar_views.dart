@@ -1,12 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_health/src/pages/dados_atuais/dados_atuais_view.dart';
 import 'package:plant_health/src/pages/dashboard/dashboard_view.dart';
 import 'package:plant_health/src/pages/historico/historico_view.dart';
 import 'package:plant_health/src/pages/login/login_view.dart';
 import 'package:plant_health/src/pages/sair/sair_view.dart';
+import 'package:plant_health/src/shared/style/textstyle.dart';
 
 class NavigattonBarViews extends StatefulWidget {
-  const NavigattonBarViews({super.key});
+  final int? indexView;
+  const NavigattonBarViews({super.key, this.indexView});
 
   @override
   State<NavigattonBarViews> createState() => _NavigattonBarViewsState();
@@ -14,6 +17,19 @@ class NavigattonBarViews extends StatefulWidget {
 
 class _NavigattonBarViewsState extends State<NavigattonBarViews> {
   int selectedIndex = 0;
+  User? currentUser;
+
+  @override
+  void initState() {
+    selectedIndex = widget.indexView ?? 0;
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      // fica ouvindo qualquer alteração de autenticação
+      setState(() {
+        currentUser = user;
+      });
+    });
+    super.initState();
+  }
 
   final List<Widget> pages = const [
     LoginView(),
@@ -33,45 +49,33 @@ class _NavigattonBarViewsState extends State<NavigattonBarViews> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[selectedIndex],
-
-      // 🔥 Fundo branco garantido
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-          backgroundColor: Colors.white, // fundo branco
+          backgroundColor: Colors.white,
           indicatorColor: Colors.green.withOpacity(0.15),
+          shadowColor: Colors.green.withOpacity(0.15),
           labelTextStyle: MaterialStateProperty.all(
-            const TextStyle(color: Colors.black),
+            PlantTextStyle.bodySM(color: Colors.black),
           ),
         ),
         child: NavigationBar(
           selectedIndex: selectedIndex,
           onDestinationSelected: onItemTapped,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.login),
-              selectedIcon: Icon(Icons.login_outlined),
-              label: "Login",
-            ),
+          destinations: [
+            NavigationDestination(icon: Icon(Icons.login), label: "Login"),
             NavigationDestination(
               icon: Icon(Icons.dashboard_outlined),
-              selectedIcon: Icon(Icons.dashboard),
               label: "Dashboard",
             ),
             NavigationDestination(
               icon: Icon(Icons.sensors),
-              selectedIcon: Icon(Icons.sensors_outlined),
               label: "Dados Atuais",
             ),
             NavigationDestination(
               icon: Icon(Icons.history),
-              selectedIcon: Icon(Icons.history_toggle_off),
               label: "Histórico",
             ),
-            NavigationDestination(
-              icon: Icon(Icons.logout),
-              selectedIcon: Icon(Icons.logout),
-              label: "Sair",
-            ),
+            NavigationDestination(icon: Icon(Icons.logout), label: "Sair"),
           ],
         ),
       ),

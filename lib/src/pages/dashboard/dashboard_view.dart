@@ -1,12 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:plant_health/src/pages/dashboard/widget/card/card_informacoes_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_luminosidade_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_temperatura_dashboard.dart';
-import 'package:plant_health/src/pages/dashboard/widget/card/card_informacoes_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_umidade_ar_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_umidade_solo_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/grafico_mensal_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/indicador_rapido_dashboard.dart';
-import 'dart:math';
+import 'package:plant_health/src/shared/constantes.dart';
+import 'package:plant_health/src/shared/style/textstyle.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -35,20 +38,18 @@ class DashboardView extends StatelessWidget {
     final data = sampleData();
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Icon(Icons.eco_outlined),
-            SizedBox(width: 10),
-            Text('Plant Health'),
-          ],
+        title: Text(
+          'Dashboard',
+          style: PlantTextStyle.bodyXL(color: Colors.white),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
+        backgroundColor: primaryColor,
       ),
+      backgroundColor: Colors.grey[200],
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: ListView(
           children: [
-            // Row superior com Temperatura e Luminosidade
             Row(
               children: [
                 Expanded(
@@ -74,7 +75,6 @@ class DashboardView extends StatelessWidget {
               ],
             ),
             SizedBox(height: 12),
-            // Umidade do ar e solo
             Row(
               children: [
                 Expanded(

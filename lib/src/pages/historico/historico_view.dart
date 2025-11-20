@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:plant_health/src/pages/historico/widget/card_historico.dart';
+import 'package:plant_health/src/shared/constantes.dart';
+import 'package:plant_health/src/shared/style/textstyle.dart';
 
 class HistoricoView extends StatelessWidget {
   const HistoricoView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 🔥 Exemplo de dados (depois você troca pelos reais)
     final historico = [
       {
         "data": "16/11/2025 18:30",
@@ -33,13 +34,17 @@ class HistoricoView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Histórico"),
-        backgroundColor: Colors.green,
+        title: Text(
+          "Histórico",
+          style: PlantTextStyle.bodyXL(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[200],
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: 12),
         itemCount: historico.length,
         itemBuilder: (_, index) {
           final item = historico[index];

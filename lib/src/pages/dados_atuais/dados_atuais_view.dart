@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_health/src/pages/dados_atuais/widget/card_dados_atuais.dart';
+import 'package:plant_health/src/shared/constantes.dart';
+import 'package:plant_health/src/shared/style/textstyle.dart';
 
 class DadosAtuaisView extends StatelessWidget {
   const DadosAtuaisView({super.key});
@@ -8,32 +10,31 @@ class DadosAtuaisView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Dados Atuais"),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white,
-        elevation: 0,
+        title: Text(
+          "Dados Atuais",
+          style: PlantTextStyle.bodyXL(color: Colors.white),
+        ),
+        backgroundColor: primaryColor,
+        centerTitle: true,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[200],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "Últimas Leituras",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-
-            const SizedBox(height: 16),
-
-            // 🔥 GRID DOS CARDS
+            SizedBox(height: 16),
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 childAspectRatio: 0.95,
-                children: const [
+                children: [
                   CardDadosAtuais(
                     icon: Icons.thermostat,
                     title: "Temperatura",
@@ -61,11 +62,8 @@ class DadosAtuaisView extends StatelessWidget {
                 ],
               ),
             ),
-
-            const SizedBox(height: 8),
-
-            // Info extra
-            const Text(
+            SizedBox(height: 8),
+            Text(
               "Última leitura: 16/11/2025 - 11:45",
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
