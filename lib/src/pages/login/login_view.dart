@@ -41,53 +41,58 @@ class _LoginViewState extends State<LoginView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 200, child: Image.asset('assets/logo.png')),
-                  SizedBox(height: 25),
-                  TextFormFieldLogin(
-                    controller: emailController,
-                    hintText: 'E-mail',
-                    validator: (value) {
-                      bool emailValid = false;
-                      if (value != null) {
-                        emailValid = RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-_]+\.[a-zA-Z]+",
-                        ).hasMatch(value);
-                      }
-                      if (value == null ||
-                          value.isEmpty ||
-                          emailValid == false) {
-                        return "Insira um email valido";
-                      }
-                      return null;
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0, top: 50.0),
+                    child: TextFormFieldLogin(
+                      controller: emailController,
+                      hintText: 'E-mail',
+                      validator: (value) {
+                        bool emailValid = false;
+                        if (value != null) {
+                          emailValid = RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9-_]+\.[a-zA-Z]+",
+                          ).hasMatch(value);
+                        }
+                        if (value == null ||
+                            value.isEmpty ||
+                            emailValid == false) {
+                          return "Insira um email valido";
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  SizedBox(height: 16),
-                  TextFormFieldLogin(
-                    controller: senhaController,
-                    hintText: 'Senha',
-                    campoSenha: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Campo obrigatório";
-                      }
-                      return null;
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 50.0),
+                    child: TextFormFieldLogin(
+                      controller: senhaController,
+                      hintText: 'Senha',
+                      campoSenha: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Campo obrigatório";
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  SizedBox(height: 24.0),
-                  ElevatedButton(
-                    onPressed: logarSistema,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      minimumSize: Size(double.infinity, 46.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: ElevatedButton(
+                      onPressed: logarSistema,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        minimumSize: Size(double.infinity, 46.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: Text(
+                        "Entrar",
+                        style: PlantTextStyle.titleSM(color: Colors.white),
                       ),
                     ),
-                    child: Text(
-                      "Entrar",
-                      style: PlantTextStyle.titleSM(color: Colors.white),
-                    ),
                   ),
-                  SizedBox(height: 20),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: Text(

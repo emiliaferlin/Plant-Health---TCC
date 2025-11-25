@@ -11,10 +11,14 @@ class SairView extends StatefulWidget {
 class _SairViewState extends State<SairView> {
   @override
   void initState() {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    _auth.signOut();
-    setState(() {});
+    funcaoSair();
     super.initState();
+  }
+
+  funcaoSair() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    await _auth.signOut();
+    setState(() {});
   }
 
   @override

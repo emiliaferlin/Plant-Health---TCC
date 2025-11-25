@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:plant_health/src/pages/dashboard/dashboard_view.dart';
+import 'package:plant_health/src/pages/dados_atuais/dados_atuais_view.dart';
 import 'package:plant_health/src/pages/historico/historico_view.dart';
 import 'package:plant_health/src/pages/sair/sair_view.dart';
 import 'package:plant_health/src/shared/text_style/textstyle.dart';
@@ -21,7 +21,6 @@ class _NavigattonBarViewsState extends State<NavigattonBarViews> {
   void initState() {
     selectedIndex = widget.indexView ?? 0;
     FirebaseAuth.instance.authStateChanges().listen((user) {
-      // fica ouvindo qualquer alteração de autenticação
       setState(() {
         currentUser = user;
       });
@@ -30,8 +29,7 @@ class _NavigattonBarViewsState extends State<NavigattonBarViews> {
   }
 
   final List<Widget> pages = const [
-    DashboardView(),
-    //DadosAtuaisView(),
+    DadosAtuaisView(),
     HistoricoView(),
     SairView(),
   ];
@@ -61,12 +59,8 @@ class _NavigattonBarViewsState extends State<NavigattonBarViews> {
           destinations: [
             NavigationDestination(
               icon: Icon(Icons.sensors),
-              label: "Dashboard",
+              label: "Dados Atuais",
             ),
-            // NavigationDestination(
-            //   icon: Icon(Icons.sensors),
-            //   label: "Dados Atuais",
-            // ),
             NavigationDestination(
               icon: Icon(Icons.history),
               label: "Histórico",

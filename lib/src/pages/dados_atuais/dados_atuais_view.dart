@@ -1,75 +1,132 @@
-// import 'package:flutter/material.dart';
-// import 'package:plant_health/src/pages/dados_atuais/widget/card_dados_atuais.dart';
-// import 'package:plant_health/src/shared/constantes.dart';
-// import 'package:plant_health/src/shared/text_style/textstyle.dart';
+import 'package:flutter/material.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/card/card_informacoes_dados_atuais.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/card/card_luminosidade_dados_atuais.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/card/card_temperatura_dados_atuais.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/card/card_umidade_ar_dados_atuais.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/card/card_umidade_solo_dados_atuais.dart';
+import 'package:plant_health/src/pages/dados_atuais/widget/indicador_rapido_dados_atuais.dart';
+import 'package:plant_health/src/services/adafruit_service.dart';
+import 'package:plant_health/src/shared/constantes.dart';
+import 'package:plant_health/src/shared/text_style/textstyle.dart';
 
-// class DadosAtuaisView extends StatelessWidget {
-//   const DadosAtuaisView({super.key});
+class DadosAtuaisView extends StatefulWidget {
+  const DadosAtuaisView({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(
-//           "Dados Atuais",
-//           style: PlantTextStyle.bodyXL(color: Colors.white),
-//         ),
-//         backgroundColor: primaryColor,
-//         centerTitle: true,
-//       ),
-//       backgroundColor: Colors.grey[200],
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               "Últimas Leituras",
-//               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 16),
-//             Expanded(
-//               child: GridView.count(
-//                 crossAxisCount: 2,
-//                 crossAxisSpacing: 16,
-//                 mainAxisSpacing: 16,
-//                 childAspectRatio: 0.95,
-//                 children: [
-//                   CardDadosAtuais(
-//                     icon: Icons.thermostat,
-//                     title: "Temperatura",
-//                     value: "24.3°C",
-//                     color: Colors.redAccent,
-//                   ),
-//                   CardDadosAtuais(
-//                     icon: Icons.water_drop,
-//                     title: "Umidade do Ar",
-//                     value: "56%",
-//                     color: Colors.blueAccent,
-//                   ),
-//                   CardDadosAtuais(
-//                     icon: Icons.eco,
-//                     title: "Umidade do Solo",
-//                     value: "42%",
-//                     color: Colors.brown,
-//                   ),
-//                   CardDadosAtuais(
-//                     icon: Icons.wb_sunny,
-//                     title: "Luminosidade",
-//                     value: "350 lux",
-//                     color: Colors.amber,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             SizedBox(height: 8),
-//             Text(
-//               "Última leitura: 16/11/2025 - 11:45",
-//               style: TextStyle(fontSize: 14, color: Colors.grey),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  State<DadosAtuaisView> createState() => _DadosAtuaisViewState();
+}
+
+class _DadosAtuaisViewState extends State<DadosAtuaisView> {
+  final service = AdafruitService(aioKey: "", username: "emiliaferlin");
+  bool carregandoTela = false;
+
+  double temperatura = 0.0;
+  double umidadeAr = 0.0;
+  double umidadeSolo = 0.0;
+  double luminosidade = 0.0;
+  String lastReading = "--/--";
+  List<double> toleranciaMensal = [];
+  List<double> tempSeries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    inicializaTela();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Dashboard',
+          style: PlantTextStyle.bodyXL(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+      ),
+      backgroundColor: Colors.grey[200],
+      body:
+          carregandoTela == true
+              ? Center(child: CircularProgressIndicator())
+              : Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ListView(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              CardInformacoes(
+                                title: 'Umidade do Ar',
+                                color: Colors.white,
+                                child: CardUmidadeArDashboard(value: umidadeAr),
+                              ),
+                              SizedBox(height: 12),
+                              CardInformacoes(
+                                title: 'Umidade do Solo',
+                                color: Colors.white,
+                                child: CardUmidadeSolo(value: umidadeSolo),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: CardInformacoes(
+                            title: 'Luminosidade',
+                            color: Colors.white,
+                            child: CardLuminosidade(value: luminosidade),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    CardInformacoes(
+                      title: 'Temperatura',
+                      color: Colors.white,
+                      child: CardTemperaturaDashboard(
+                        value: temperatura,
+                        series: tempSeries,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    IndicadorRapido(
+                      label: 'Última leitura',
+                      value: lastReading,
+                    ),
+                  ],
+                ),
+              ),
+    );
+  }
+
+  inicializaTela() async {
+    setState(() {
+      carregandoTela = true;
+    });
+    try {
+      lastReading =
+          "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} - ${DateTime.now().hour}:${DateTime.now().minute}";
+
+      temperatura = await service.getLastValue("temperatura");
+      tempSeries = await service.getFeedHistory("temperatura", 24);
+      toleranciaMensal = await service.getFeedHistory("temperatura", 30);
+      umidadeAr = await service.getLastValue("umidade");
+      luminosidade = await service.getLastValue("luminosidade");
+      umidadeSolo = await service.getLastValue("umidade_solo");
+
+      setState(() {
+        carregandoTela = false;
+      });
+    } catch (e) {
+      setState(() {
+        carregandoTela = false;
+      });
+      print("Erro: $e");
+    }
+  }
+}
