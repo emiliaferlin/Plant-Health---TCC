@@ -17,7 +17,7 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  final service = AdafruitService(aioKey: "", username: "");
+  final service = AdafruitService(aioKey: "", username: "emiliaferlin");
   bool carregandoTela = false;
 
   double temperatura = 0.0;
