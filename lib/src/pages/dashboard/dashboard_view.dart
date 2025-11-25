@@ -1,41 +1,44 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_informacoes_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_luminosidade_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_temperatura_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_umidade_ar_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/card/card_umidade_solo_dashboard.dart';
-import 'package:plant_health/src/pages/dashboard/widget/grafico_mensal_dashboard.dart';
 import 'package:plant_health/src/pages/dashboard/widget/indicador_rapido_dashboard.dart';
+import 'package:plant_health/src/services/adafruit_service.dart';
 import 'package:plant_health/src/shared/constantes.dart';
-import 'package:plant_health/src/shared/style/textstyle.dart';
+import 'package:plant_health/src/shared/text_style/textstyle.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
 
-  // Dados de exemplo
-  Map<String, dynamic> sampleData() {
-    return {
-      'temperature': 24.3,
-      'airHumidity': 56,
-      'soilHumidity': 42,
-      'luminosity': 350,
-      'lastReading': '11:45 — 16/11/2025',
-      'tempSeries': List<double>.generate(
-        24,
-        (i) => 18 + 6 * sin(i / 3) + Random(i).nextDouble() * 1.2,
-      ),
-      'monthlySeries': List<double>.generate(
-        30,
-        (i) => 20 + (i % 7 - 3) * 0.8 + Random(i).nextDouble() * 1.5,
-      ),
-    };
+  @override
+  State<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends State<DashboardView> {
+  final service = AdafruitService(
+    aioKey: "aio_yXdD02sJ7lIn1bl6z29L7NsqJPxk",
+    username: "emiliaferlin",
+  );
+  bool carregandoTela = false;
+
+  double temperatura = 0.0;
+  double umidadeAr = 0.0;
+  double umidadeSolo = 0.0;
+  double luminosidade = 0.0;
+  String lastReading = "--/--";
+  List<double> toleranciaMensal = [];
+  List<double> tempSeries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    inicializaTela();
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = sampleData();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,100 +49,87 @@ class DashboardView extends StatelessWidget {
         backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.grey[200],
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: ListView(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: CardInformacoes(
-                    title: 'Temperatura',
-                    color: Colors.white,
-                    child: CardTemperaturaDashboard(
-                      value: data['temperature'],
-                      series: data['tempSeries'],
+      body:
+          carregandoTela == true
+              ? Center(child: CircularProgressIndicator())
+              : Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ListView(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            children: [
+                              CardInformacoes(
+                                title: 'Umidade do Ar',
+                                color: Colors.white,
+                                child: CardUmidadeArDashboard(value: umidadeAr),
+                              ),
+                              SizedBox(height: 12),
+                              CardInformacoes(
+                                title: 'Umidade do Solo',
+                                color: Colors.white,
+                                child: CardUmidadeSolo(value: umidadeSolo),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          flex: 1,
+                          child: CardInformacoes(
+                            title: 'Luminosidade',
+                            color: Colors.white,
+                            child: CardLuminosidade(value: luminosidade),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    SizedBox(height: 12),
+                    CardInformacoes(
+                      title: 'Temperatura',
+                      color: Colors.white,
+                      child: CardTemperaturaDashboard(
+                        value: temperatura,
+                        series: tempSeries,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    IndicadorRapido(
+                      label: 'Última leitura',
+                      value: lastReading,
+                    ),
+                  ],
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  flex: 1,
-                  child: CardInformacoes(
-                    title: 'Luminosidade',
-                    color: Colors.white,
-                    child: CardLuminosidade(value: data['luminosity']),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: CardInformacoes(
-                    title: 'Umidade do Ar',
-                    color: Colors.white,
-                    child: CardUmidadeArDashboard(value: data['airHumidity']),
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: CardInformacoes(
-                    title: 'Umidade do Solo',
-                    color: Colors.white,
-                    child: CardUmidadeSolo(value: data['soilHumidity']),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            // Gráfico mensal e KPIs
-            CardInformacoes(
-              title: 'Tendência Mensal (médias diárias)',
-              color: Colors.white,
-              child: GraficoMensal(series: data['monthlySeries']),
-            ),
-            SizedBox(height: 12),
-            // Rodapé com indicadores rápidos
-            Row(
-              children: [
-                Expanded(
-                  child: IndicadorRapido(
-                    label: 'Última leitura',
-                    value: data['lastReading'],
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: IndicadorRapido(
-                    label: 'Status',
-                    value: 'OK',
-                    statusColor: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 18),
-            Row(
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.history),
-                  label: Text('Ver histórico'),
-                ),
-                SizedBox(width: 8),
-                OutlinedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.download_rounded),
-                  label: Text('Exportar'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+              ),
     );
+  }
+
+  inicializaTela() async {
+    setState(() {
+      carregandoTela = true;
+    });
+    try {
+      lastReading =
+          "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} - ${DateTime.now().hour}:${DateTime.now().minute}";
+
+      temperatura = await service.getLastValue("temperatura");
+      tempSeries = await service.getFeedHistory("temperatura", 24);
+      toleranciaMensal = await service.getFeedHistory("temperatura", 30);
+      umidadeAr = await service.getLastValue("umidade");
+      luminosidade = await service.getLastValue("luminosidade");
+      umidadeSolo = await service.getLastValue("umidade_solo");
+
+      setState(() {
+        carregandoTela = false;
+      });
+    } catch (e) {
+      setState(() {
+        carregandoTela = false;
+      });
+      print("Erro: $e");
+    }
   }
 }

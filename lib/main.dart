@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:plant_health/firebase_options.dart';
+import 'package:plant_health/src/components/loading/loading.dart';
 import 'package:plant_health/src/pages/login/auth.dart';
 import 'package:plant_health/src/shared/constantes.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Plant Health',
       color: primaryColor,
+      builder: LoadingPlant.initLoading(context),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
       ),

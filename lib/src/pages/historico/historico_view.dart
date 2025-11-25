@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plant_health/src/pages/historico/widget/card_historico.dart';
 import 'package:plant_health/src/shared/constantes.dart';
-import 'package:plant_health/src/shared/style/textstyle.dart';
+import 'package:plant_health/src/shared/text_style/textstyle.dart';
 
 class HistoricoView extends StatelessWidget {
   const HistoricoView({super.key});
