@@ -1,37 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:plant_health/src/models/adafruit_model.dart';
 import 'package:plant_health/src/pages/historico/widget/card_historico.dart';
+import 'package:plant_health/src/services/adafruit_service.dart';
 import 'package:plant_health/src/shared/constantes.dart';
 import 'package:plant_health/src/shared/text_style/textstyle.dart';
 
-class HistoricoView extends StatelessWidget {
+class HistoricoView extends StatefulWidget {
   const HistoricoView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final historico = [
-      {
-        "data": "16/11/2025 18:30",
-        "temp": "25.3 °C",
-        "umidadeAr": "61%",
-        "umidadeSolo": "46%",
-        "luz": "742 lx",
-      },
-      {
-        "data": "16/11/2025 18:00",
-        "temp": "24.8 °C",
-        "umidadeAr": "59%",
-        "umidadeSolo": "44%",
-        "luz": "710 lx",
-      },
-      {
-        "data": "16/11/2025 17:30",
-        "temp": "26.0 °C",
-        "umidadeAr": "62%",
-        "umidadeSolo": "48%",
-        "luz": "765 lx",
-      },
-    ];
+  State<HistoricoView> createState() => _HistoricoViewState();
+}
 
+class _HistoricoViewState extends State<HistoricoView> {
+  final service = AdafruitService(aioKey: "", username: "emiliaferlin");
+  bool carregandoTela = false;
+  List<FeedModel> umidade = [];
+  List<FeedModel> umidadeSolo = [];
+  List<FeedModel> temperatura = [];
+  List<FeedModel> luminosidade = [];
+
+  @override
+  void initState() {
+    super.initState();
+    inicializaTela();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -42,15 +38,77 @@ class HistoricoView extends StatelessWidget {
         backgroundColor: primaryColor,
       ),
       backgroundColor: Colors.grey[200],
-      body: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        separatorBuilder: (_, __) => SizedBox(height: 12),
-        itemCount: historico.length,
-        itemBuilder: (_, index) {
-          final item = historico[index];
-          return CardHistorico(item: item);
-        },
-      ),
+      body:
+          carregandoTela == true
+              ? Center(child: CircularProgressIndicator(color: primaryColor))
+              : Column(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      separatorBuilder: (_, __) => SizedBox(height: 12),
+                      itemCount: umidade.length,
+                      itemBuilder: (_, index) {
+                        final item = umidade[index];
+                        return CardHistorico(item: item);
+                      },
+                    ),
+                  ),
+                ],
+              ),
     );
+  }
+
+  inicializaTela() async {
+    setState(() {
+      carregandoTela = true;
+    });
+
+    try {
+      final responseUmidade = await service.buscaCadaFeedComLimiteDados(
+        "umidade",
+        30,
+      );
+      umidade =
+          responseUmidade
+              .map<FeedModel>((item) => FeedModel.fromMap(item))
+              .toList();
+
+      final responseUmidadeSolo = await service.buscaCadaFeedComLimiteDados(
+        "umidade-solo",
+        30,
+      );
+      umidadeSolo =
+          responseUmidadeSolo
+              .map<FeedModel>((item) => FeedModel.fromMap(item))
+              .toList();
+
+      final responseTemperatura = await service.buscaCadaFeedComLimiteDados(
+        "temperatura",
+        30,
+      );
+      temperatura =
+          responseTemperatura
+              .map<FeedModel>((item) => FeedModel.fromMap(item))
+              .toList();
+
+      final responseLuminosidade = await service.buscaCadaFeedComLimiteDados(
+        "temperatura",
+        30,
+      );
+      luminosidade =
+          responseLuminosidade
+              .map<FeedModel>((item) => FeedModel.fromMap(item))
+              .toList();
+
+      setState(() {
+        carregandoTela = false;
+      });
+    } catch (e) {
+      setState(() {
+        carregandoTela = false;
+      });
+      print("Erro: $e");
+    }
   }
 }

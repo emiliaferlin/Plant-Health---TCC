@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plant_health/src/models/adafruit_model.dart';
 
 class CardHistorico extends StatelessWidget {
-  final item;
+  final FeedModel? item;
   const CardHistorico({super.key, this.item});
 
   @override
@@ -15,54 +16,41 @@ class CardHistorico extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 📌 Data e hora
             Text(
-              item["data"]!,
-              style: const TextStyle(
+              item?.createdAt?.toIso8601String() ?? "",
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black54,
               ),
             ),
-
-            const Divider(height: 20),
-
-            // 🔥 Temperatura
+            Divider(height: 20),
             widgetInformacoes(
               Icons.thermostat,
               Colors.red,
               "Temperatura",
-              item["temp"]!,
+              item?.value ?? "",
             ),
-
-            const SizedBox(height: 8),
-
-            // 💧 Umidade do Ar
+            SizedBox(height: 8),
             widgetInformacoes(
               Icons.water_drop,
               Colors.blue,
               "Umidade do Ar",
-              item["umidadeAr"]!,
+              item?.value ?? "",
             ),
-
-            const SizedBox(height: 8),
-
-            // 🌱 Umidade do Solo
+            SizedBox(height: 8),
             widgetInformacoes(
               Icons.eco,
               Colors.brown,
               "Umidade do Solo",
-              item["umidadeSolo"]!,
+              item?.value ?? "",
             ),
-
-            const SizedBox(height: 8),
-
-            // ☀️ Luminosidade
+            SizedBox(height: 8),
             widgetInformacoes(
               Icons.wb_sunny,
               Colors.amber,
               "Luminosidade",
-              item["luz"]!,
+              item?.value ?? "",
             ),
           ],
         ),

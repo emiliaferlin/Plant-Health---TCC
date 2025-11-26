@@ -25,7 +25,6 @@ class _DadosAtuaisViewState extends State<DadosAtuaisView> {
   double umidadeSolo = 0.0;
   double luminosidade = 0.0;
   String lastReading = "--/--";
-  List<double> toleranciaMensal = [];
   List<double> tempSeries = [];
 
   @override
@@ -39,7 +38,7 @@ class _DadosAtuaisViewState extends State<DadosAtuaisView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Dashboard',
+          'Dados Atuais',
           style: PlantTextStyle.bodyXL(color: Colors.white),
         ),
         centerTitle: true,
@@ -112,12 +111,14 @@ class _DadosAtuaisViewState extends State<DadosAtuaisView> {
       lastReading =
           "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year} - ${DateTime.now().hour}:${DateTime.now().minute}";
 
-      temperatura = await service.getLastValue("temperatura");
-      tempSeries = await service.getFeedHistory("temperatura", 24);
-      toleranciaMensal = await service.getFeedHistory("temperatura", 30);
-      umidadeAr = await service.getLastValue("umidade");
-      luminosidade = await service.getLastValue("luminosidade");
-      umidadeSolo = await service.getLastValue("umidade_solo");
+      temperatura = await service.buscaUtimoDadoCadaFeed("temperatura");
+      tempSeries = await service.buscaCadaFeedComValorComLimiteDados(
+        "temperatura",
+        24,
+      );
+      umidadeAr = await service.buscaUtimoDadoCadaFeed("umidade");
+      luminosidade = await service.buscaUtimoDadoCadaFeed("luminosidade");
+      umidadeSolo = await service.buscaUtimoDadoCadaFeed("umidade-solo");
 
       setState(() {
         carregandoTela = false;
