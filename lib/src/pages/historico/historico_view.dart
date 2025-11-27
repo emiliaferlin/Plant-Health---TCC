@@ -41,20 +41,15 @@ class _HistoricoViewState extends State<HistoricoView> {
       body:
           carregandoTela == true
               ? Center(child: CircularProgressIndicator(color: primaryColor))
-              : Column(
-                children: [
-                  Expanded(
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(16),
-                      separatorBuilder: (_, __) => SizedBox(height: 12),
-                      itemCount: umidade.length,
-                      itemBuilder: (_, index) {
-                        final item = umidade[index];
-                        return CardHistorico(item: item);
-                      },
-                    ),
-                  ),
-                ],
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CardHistorico(itens: umidade),
+                    CardHistorico(itens: umidadeSolo),
+                    CardHistorico(itens: temperatura),
+                    CardHistorico(itens: luminosidade),
+                  ],
+                ),
               ),
     );
   }
@@ -93,7 +88,7 @@ class _HistoricoViewState extends State<HistoricoView> {
               .toList();
 
       final responseLuminosidade = await service.buscaCadaFeedComLimiteDados(
-        "temperatura",
+        "luminosidade",
         30,
       );
       luminosidade =
